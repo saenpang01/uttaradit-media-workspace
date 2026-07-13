@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ห้องทำงานกลาง — ทีมสื่ออุตรดิตถ์</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@500;700;900&family=Noto+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --ink:#233B2D;
+  --ink-soft:#3E5646;
+  --paper:#F1ECDD;
+  --paper-raised:#FAF7EE;
+  --gold:#C89B3C;
+  --gold-deep:#A67C25;
+  --green-unripe:#7B8F5C;
+  --red-ripe:#A63D40;
+  --line:#D8CFB4;
+  --shadow: 0 2px 10px rgba(35,59,45,0.08);
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{
+  font-family:'Noto Sans Thai', sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  min-height:100vh;
+}
+::selection{background:var(--gold); color:var(--paper-raised);}
+
+/* ---------- Header ---------- */
+header{
+  padding:20px 24px 16px;
+  border-bottom:2px solid var(--ink);
+  background:var(--paper-raised);
+  position:sticky; top:0; z-index:20;
+}
+.brand{
+  display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
+}
+.brand h1{
+  font-family:'Noto Serif Thai', serif;
+  font-weight:900;
+  font-size:22px;
+  letter-spacing:0.3px;
+}
+.brand .tag{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11px;
+  color:var(--gold-deep);
+  background:rgba(200,155,60,0.15);
+  padding:2px 8px;
+  border-radius:100px;
+  border:1px solid var(--gold);
+}
+.subline{
+  margin-top:4px;
+  font-size:12.5px;
+  color:var(--ink-soft);
+}
+
+.view-switch{
+  display:flex; gap:6px; margin-top:14px;
+}
+.view-switch button{
+  font-family:'Noto Sans Thai', sans-serif;
+  font-weight:600;
+  font-size:13.5px;
+  padding:8px 16px;
+  border-radius:8px;
+  border:1.5px solid var(--ink);
+  background:transparent;
+  color:var(--ink);
+  cursor:pointer;
+  transition:all .15s ease;
+}
+.view-switch button.active{
+  background:var(--ink);
+  color:var(--paper-raised);
+}
+.add-btn{
+  margin-left:auto;
+  font-family:'Noto Sans Thai', sans-serif;
+  font-weight:700;
+  font-size:13.5px;
+  padding:8px 18px;
+  border-radius:8px;
+  border:none;
+  background:var(--gold-deep);
+  color:#fff;
+  cursor:pointer;
+  box-shadow:var(--shadow);
+}
+.add-btn:hover{background:var(--gold);}
+
+.header-row{display:flex; align-items:center; gap:6px; flex-wrap:wrap;}
+
+/* ---------- Main ---------- */
+main{padding:20px 24px 60px; max-width:1200px; margin:0 auto;}
+
+.hint{
+  font-size:12.5px; color:var(--ink-soft); margin-bottom:16px;
+  font-family:'IBM Plex Mono', monospace;
+}
+
+/* ---------- Board ---------- */
+.board{
+  display:grid;
+  grid-template-columns:repeat(4, minmax(230px,1fr));
+  gap:14px;
+  overflow-x:auto;
+}
+@media (max-width:900px){
+  .board{grid-template-columns:1fr; overflow-x:visible;}
+}
+.column{
+  background:var(--paper-raised);
+  border:1.5px solid var(--line);
+  border-radius:12px;
+  min-height:200px;
+  display:flex; flex-direction:column;
+}
+.column-head{
+  padding:12px 14px;
+  border-bottom:2px solid var(--col-color, var(--ink));
+  display:flex; align-items:center; justify-content:space-between;
+}
+.column-head h3{
+  font-family:'Noto Serif Thai', serif;
+  font-size:15px;
+  font-weight:700;
+  color:var(--col-color, var(--ink));
+}
+.column-head .count{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12px;
+  color:var(--ink-soft);
+}
+.column-body{
+  padding:10px;
+  display:flex; flex-direction:column; gap:8px;
+  flex:1;
+}
+.empty-col{
+  font-size:12px; color:var(--ink-soft); text-align:center; padding:20px 6px; opacity:0.7;
+}
+
+.card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-left:4px solid var(--cat-color, var(--gold));
+  border-radius:8px;
+  padding:10px 12px;
+  cursor:pointer;
+  transition:transform .12s ease, box-shadow .12s ease;
+}
+.card:hover{transform:translateY(-1px); box-shadow:var(--shadow);}
+.card .cat{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:10.5px;
+  color:var(--cat-color, var(--gold-deep));
+  font-weight:600;
+  margin-bottom:4px;
+}
+.card .title{
+  font-size:14px; font-weight:600; line-height:1.4; margin-bottom:6px;
+}
+.card .meta{
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:11px; color:var(--ink-soft);
+}
+.card .due{
+  font-family:'IBM Plex Mono', monospace;
+}
+.card .due.overdue{color:var(--red-ripe); font-weight:700;}
+.ripe-dot{
+  display:inline-block; width:8px; height:8px; border-radius:50%;
+  margin-right:5px;
+}
+
+/* ---------- Calendar ---------- */
+.cal-head{
+  display:flex; align-items:center; gap:12px; margin-bottom:14px;
+}
+.cal-head button{
+  width:32px; height:32px; border-radius:8px; border:1.5px solid var(--ink);
+  background:var(--paper-raised); cursor:pointer; font-size:15px;
+}
+.cal-head h2{
+  font-family:'Noto Serif Thai', serif; font-size:19px; font-weight:700;
+}
+.cal-grid{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:6px;
+}
+.cal-dow{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11px; text-align:center; color:var(--ink-soft); padding-bottom:4px;
+}
+.cal-cell{
+  background:var(--paper-raised);
+  border:1px solid var(--line);
+  border-radius:8px;
+  min-height:92px;
+  padding:6px;
+  display:flex; flex-direction:column; gap:3px;
+}
+.cal-cell.outside{opacity:0.35;}
+.cal-cell.today{border:2px solid var(--gold-deep);}
+.cal-daynum{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11.5px; font-weight:600; color:var(--ink-soft);
+}
+.cal-task{
+  font-size:10.5px;
+  background:var(--cat-color, var(--gold));
+  color:#fff;
+  border-radius:4px;
+  padding:2px 5px;
+  cursor:pointer;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+@media (max-width:700px){
+  .cal-grid{grid-template-columns:repeat(7,minmax(38px,1fr)); gap:3px;}
+  .cal-cell{min-height:60px; padding:3px;}
+  .cal-task{font-size:9px;}
+}
+
+/* ---------- Modal ---------- */
+.overlay{
+  position:fixed; inset:0; background:rgba(35,59,45,0.45);
+  display:flex; align-items:center; justify-content:center;
+  z-index:100; padding:16px;
+}
+.modal{
+  background:var(--paper-raised);
+  border-radius:14px;
+  padding:22px;
+  width:100%; max-width:440px;
+  max-height:88vh; overflow-y:auto;
+  box-shadow:0 10px 40px rgba(0,0,0,0.25);
+}
+.modal h3{
+  font-family:'Noto Serif Thai', serif; font-size:18px; margin-bottom:16px;
+}
+.field{margin-bottom:12px;}
+.field label{
+  display:block; font-size:12px; font-weight:600; color:var(--ink-soft); margin-bottom:5px;
+}
+.field input, .field select, .field textarea{
+  width:100%; padding:9px 10px; border-radius:8px;
+  border:1.5px solid var(--line); background:#fff;
+  font-family:'Noto Sans Thai', sans-serif; font-size:13.5px; color:var(--ink);
+}
+.field textarea{resize:vertical; min-height:60px;}
+.modal-actions{
+  display:flex; gap:8px; margin-top:18px; align-items:center;
+}
+.btn{
+  flex:1; padding:10px; border-radius:8px; border:none; font-weight:700;
+  font-size:13.5px; cursor:pointer; font-family:'Noto Sans Thai', sans-serif;
+}
+.btn-primary{background:var(--gold-deep); color:#fff;}
+.btn-primary:hover{background:var(--gold);}
+.btn-ghost{background:transparent; border:1.5px solid var(--line); color:var(--ink);}
+.btn-danger{background:transparent; color:var(--red-ripe); border:1.5px solid var(--red-ripe); flex:0 0 auto; padding:10px 14px;}
+
+.loading{text-align:center; padding:60px 0; color:var(--ink-soft); font-family:'IBM Plex Mono', monospace; font-size:13px;}
+.err{color:var(--red-ripe); font-size:12px; margin-top:6px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-row">
+    <div class="brand">
+      <h1>ห้องทำงานกลาง</h1>
+      <span class="tag">ทีมสื่อเกษตร · อุตรดิตถ์</span>
+    </div>
+  </div>
+  <div class="subline">กระดานงานกลาง — เห็นสถานะงานทุกชิ้น ไม่ต้องไล่หาในไลน์</div>
+  <div class="view-switch">
+    <button id="btn-board" class="active">📋 กระดานงาน</button>
+    <button id="btn-cal">🗓️ ปฏิทินเดือน</button>
+    <button class="add-btn" id="btn-add">+ เพิ่มงาน</button>
+  </div>
+</header>
+
+<main>
+  <div id="root" class="loading">กำลังโหลดข้อมูล…</div>
+</main>
+
+<div id="modal-root"></div>
+
+<script>
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyqEuhSB25y2emp03rIN3_AsX1SbOIWKewXLN4Ccps6JivNKvDm73BceJdOJtNUPO15Gg/exec';
+const STORAGE_KEY = 'uttaradit-media-tasks-v1';
+const STATUSES = [
+  {id:'idea', label:'ไอเดีย', color:'#7B8F5C'},
+  {id:'doing', label:'กำลังทำ', color:'#C89B3C'},
+  {id:'review', label:'รอตรวจ', color:'#A67C25'},
+  {id:'done', label:'เผยแพร่แล้ว', color:'#233B2D'},
+];
+const CATEGORIES = [
+  {id:'durian', label:'ทุเรียนหลงลับแล', color:'#A63D40'},
+  {id:'gi', label:'GI / OTOP', color:'#C89B3C'},
+  {id:'agri', label:'ข่าวเกษตรทั่วไป', color:'#7B8F5C'},
+  {id:'general', label:'งานทั่วไป', color:'#3E5646'},
+];
+
+let tasks = [];
+let view = 'board';
+let calMonth = new Date();
+let editingTask = null;
+
+function catInfo(id){ return CATEGORIES.find(c=>c.id===id) || CATEGORIES[3]; }
+function statusInfo(id){ return STATUSES.find(s=>s.id===id) || STATUSES[0]; }
+function uid(){ return 'task_' + Date.now() + '_' + Math.random().toString(36).slice(2,8); }
+
+async function loadTasks(){
+  try{
+    const res = await fetch(APPS_SCRIPT_URL, { method:'GET' });
+    const data = await res.json();
+    tasks = (data && data.ok && Array.isArray(data.tasks)) ? data.tasks : [];
+  }catch(e){
+    console.error('load failed', e);
+    tasks = [];
+    document.getElementById('root').innerHTML = '<div class="loading">โหลดข้อมูลจาก Google Sheet ไม่สำเร็จ ลองรีเฟรชหน้าอีกครั้ง</div>';
+    return;
+  }
+  render();
+}
+
+// ใช้ text/plain เป็น content-type เพื่อเลี่ยง CORS preflight ที่ Apps Script จัดการไม่ได้
+async function postToSheet_(payload){
+  const res = await fetch(APPS_SCRIPT_URL, {
+    method:'POST',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify(payload),
+  });
+  return res.json();
+}
+
+async function createTaskRemote(task){
+  await postToSheet_({ action:'create', task });
+}
+async function updateTaskRemote(task){
+  await postToSheet_({ action:'update', task });
+}
+async function deleteTaskRemote(id){
+  await postToSheet_({ action:'delete', id });
+}
+
+function openModal(task){
+  editingTask = task || null;
+  const t = task || {id:null, title:'', desc:'', category:'agri', status:'idea', assignee:'', due:''};
+  const root = document.getElementById('modal-root');
+  root.innerHTML = `
+    <div class="overlay" id="overlay">
+      <div class="modal">
+        <h3>${task ? 'แก้ไขงาน' : 'เพิ่มงานใหม่'}</h3>
+        <div class="field">
+          <label>ชื่องาน</label>
+          <input id="f-title" value="${escapeAttr(t.title)}" placeholder="เช่น สกู๊ปราคาทุเรียนหลงลับแลประจำสัปดาห์">
+        </div>
+        <div class="field">
+          <label>รายละเอียด</label>
+          <textarea id="f-desc" placeholder="รายละเอียดเพิ่มเติม (ไม่บังคับ)">${escapeHtml(t.desc||'')}</textarea>
+        </div>
+        <div class="field">
+          <label>หมวดงาน</label>
+          <select id="f-cat">
+            ${CATEGORIES.map(c=>`<option value="${c.id}" ${t.category===c.id?'selected':''}>${c.label}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field">
+          <label>สถานะ</label>
+          <select id="f-status">
+            ${STATUSES.map(s=>`<option value="${s.id}" ${t.status===s.id?'selected':''}>${s.label}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field">
+          <label>ผู้รับผิดชอบ</label>
+          <input id="f-assignee" value="${escapeAttr(t.assignee||'')}" placeholder="ชื่อคนทำงาน">
+        </div>
+        <div class="field">
+          <label>กำหนดส่ง</label>
+          <input id="f-due" type="date" value="${t.due||''}">
+        </div>
+        <div id="modal-err" class="err"></div>
+        <div class="modal-actions">
+          ${task ? '<button class="btn btn-danger" id="btn-delete">ลบ</button>' : ''}
+          <button class="btn btn-ghost" id="btn-cancel">ยกเลิก</button>
+          <button class="btn btn-primary" id="btn-save">บันทึก</button>
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById('overlay').addEventListener('click', (e)=>{ if(e.target.id==='overlay') closeModal(); });
+  document.getElementById('btn-cancel').addEventListener('click', closeModal);
+  document.getElementById('btn-save').addEventListener('click', ()=>submitTask(t.id));
+  const delBtn = document.getElementById('btn-delete');
+  if(delBtn) delBtn.addEventListener('click', ()=>deleteTask(t.id));
+}
+
+function closeModal(){
+  document.getElementById('modal-root').innerHTML = '';
+  editingTask = null;
+}
+
+function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function escapeAttr(s){ return escapeHtml(s); }
+
+async function submitTask(existingId){
+  const title = document.getElementById('f-title').value.trim();
+  if(!title){
+    document.getElementById('modal-err').textContent = 'กรุณาใส่ชื่องาน';
+    return;
+  }
+  const data = {
+    id: existingId || uid(),
+    title,
+    desc: document.getElementById('f-desc').value.trim(),
+    category: document.getElementById('f-cat').value,
+    status: document.getElementById('f-status').value,
+    assignee: document.getElementById('f-assignee').value.trim(),
+    due: document.getElementById('f-due').value,
+    updated_at: new Date().toISOString().slice(0,10),
+  };
+  const saveBtn = document.getElementById('btn-save');
+  saveBtn.textContent = 'กำลังบันทึก…'; saveBtn.disabled = true;
+  try{
+    if(existingId){
+      await updateTaskRemote(data);
+      tasks = tasks.map(t => t.id===existingId ? data : t);
+    }else{
+      await createTaskRemote(data);
+      tasks.push(data);
+    }
+    closeModal();
+    render();
+  }catch(e){
+    document.getElementById('modal-err').textContent = 'บันทึกไม่สำเร็จ ลองใหม่อีกครั้ง';
+    saveBtn.textContent = 'บันทึก'; saveBtn.disabled = false;
+  }
+}
+
+async function deleteTask(id){
+  try{
+    await deleteTaskRemote(id);
+    tasks = tasks.filter(t=>t.id!==id);
+    closeModal();
+    render();
+  }catch(e){
+    document.getElementById('modal-err').textContent = 'ลบไม่สำเร็จ ลองใหม่อีกครั้ง';
+  }
+}
+
+function isOverdue(due, status){
+  if(!due || status==='done') return false;
+  const today = new Date(); today.setHours(0,0,0,0);
+  return new Date(due) < today;
+}
+
+function renderBoard(){
+  const root = document.getElementById('root');
+  root.innerHTML = `
+    <div class="hint">${tasks.length} งานทั้งหมด · แตะการ์ดเพื่อแก้ไข</div>
+    <div class="board">
+      ${STATUSES.map(col=>{
+        const colTasks = tasks.filter(t=>t.status===col.id);
+        return `
+        <div class="column">
+          <div class="column-head" style="--col-color:${col.color}">
+            <h3>${col.label}</h3>
+            <span class="count">${colTasks.length}</span>
+          </div>
+          <div class="column-body">
+            ${colTasks.length===0 ? '<div class="empty-col">ยังไม่มีงาน</div>' :
+              colTasks.map(t=>{
+                const cat = catInfo(t.category);
+                const overdue = isOverdue(t.due, t.status);
+                return `
+                <div class="card" style="--cat-color:${cat.color}" data-id="${t.id}">
+                  <div class="cat">${cat.label}</div>
+                  <div class="title">${escapeHtml(t.title)}</div>
+                  <div class="meta">
+                    <span>${escapeHtml(t.assignee||'—')}</span>
+                    <span class="due ${overdue?'overdue':''}">${t.due ? formatDateShort(t.due) : ''}</span>
+                  </div>
+                </div>`;
+              }).join('')
+            }
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+  root.querySelectorAll('.card').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      const t = tasks.find(x=>x.id===card.dataset.id);
+      openModal(t);
+    });
+  });
+}
+
+function formatDateShort(iso){
+  const d = new Date(iso);
+  return d.toLocaleDateString('th-TH', {day:'numeric', month:'short'});
+}
+
+const THAI_MONTHS = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const THAI_DOW = ['อา','จ','อ','พ','พฤ','ศ','ส'];
+
+function renderCalendar(){
+  const root = document.getElementById('root');
+  const year = calMonth.getFullYear();
+  const month = calMonth.getMonth();
+  const firstDay = new Date(year, month, 1);
+  const startOffset = firstDay.getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const daysInPrevMonth = new Date(year, month, 0).getDate();
+  const todayStr = new Date().toDateString();
+
+  let cells = [];
+  for(let i=startOffset-1;i>=0;i--){
+    cells.push({day: daysInPrevMonth-i, outside:true, date:null});
+  }
+  for(let d=1; d<=daysInMonth; d++){
+    const dateObj = new Date(year, month, d);
+    cells.push({day:d, outside:false, date: dateObj});
+  }
+  while(cells.length % 7 !== 0){
+    cells.push({day: cells.length - (startOffset+daysInMonth) + 1, outside:true, date:null});
+  }
+
+  root.innerHTML = `
+    <div class="cal-head">
+      <button id="cal-prev">‹</button>
+      <h2>${THAI_MONTHS[month]} ${year+543}</h2>
+      <button id="cal-next">›</button>
+    </div>
+    <div class="cal-grid">
+      ${THAI_DOW.map(d=>`<div class="cal-dow">${d}</div>`).join('')}
+      ${cells.map(c=>{
+        const isToday = c.date && c.date.toDateString()===todayStr;
+        const iso = c.date ? c.date.toISOString().slice(0,10) : null;
+        const dayTasks = iso ? tasks.filter(t=>t.due===iso) : [];
+        return `
+        <div class="cal-cell ${c.outside?'outside':''} ${isToday?'today':''}">
+          <div class="cal-daynum">${c.day}</div>
+          ${dayTasks.map(t=>{
+            const cat = catInfo(t.category);
+            return `<div class="cal-task" style="--cat-color:${cat.color}" data-id="${t.id}">${escapeHtml(t.title)}</div>`;
+          }).join('')}
+        </div>`;
+      }).join('')}
+    </div>
+  `;
+  document.getElementById('cal-prev').addEventListener('click', ()=>{ calMonth = new Date(year, month-1, 1); renderCalendar(); });
+  document.getElementById('cal-next').addEventListener('click', ()=>{ calMonth = new Date(year, month+1, 1); renderCalendar(); });
+  root.querySelectorAll('.cal-task').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const t = tasks.find(x=>x.id===el.dataset.id);
+      openModal(t);
+    });
+  });
+}
+
+function render(){
+  if(view==='board') renderBoard(); else renderCalendar();
+}
+
+document.getElementById('btn-board').addEventListener('click', ()=>{
+  view='board';
+  document.getElementById('btn-board').classList.add('active');
+  document.getElementById('btn-cal').classList.remove('active');
+  render();
+});
+document.getElementById('btn-cal').addEventListener('click', ()=>{
+  view='cal';
+  document.getElementById('btn-cal').classList.add('active');
+  document.getElementById('btn-board').classList.remove('active');
+  render();
+});
+document.getElementById('btn-add').addEventListener('click', ()=>openModal(null));
+
+loadTasks();
+</script>
+</body>
+</html>
