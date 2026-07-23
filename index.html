@@ -296,6 +296,7 @@ main{padding:20px 24px 60px; max-width:1400px; margin:0 auto;}
 .news-feed{
   display:flex; flex-direction:column; gap:14px;
   max-width:520px;
+  margin:0 auto;
 }
 .news-card{
   background:var(--paper-raised);
@@ -934,7 +935,7 @@ function renderFeed(){
   }
 
   root.innerHTML = `
-    <div class="hint">ฟีดข่าวที่ระบบกรองแล้วว่าเกี่ยวข้อง — เรียงใหม่สุดก่อน</div>
+    <div class="hint" style="max-width:520px; margin-left:auto; margin-right:auto;">ฟีดข่าวที่ระบบกรองแล้วว่าเกี่ยวข้อง — เรียงใหม่สุดก่อน</div>
     <div class="news-feed">
       ${feedItems.map(item=>{
         const color = NEWS_CATEGORY_COLORS[item.category] || 'var(--gold)';
