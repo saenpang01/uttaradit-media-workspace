@@ -1,0 +1,8 @@
+{
+  "name": "ห้องทำงาน อาสาแมวส้ม",
+  "description": "ห้องทำงาน อาสาแมวส้ม - กระดานงานกลางและฟีดข่าวสำหรับทีมสื่ออุตรดิตถ์",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
